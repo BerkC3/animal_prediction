@@ -50,7 +50,7 @@ This project is an AI-powered animal image classification system that can identi
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/animal-classification-ai.git
+git clone https://github.com/berkc3/animal-classification-ai.git
 cd animal-classification-ai
 ```
 
