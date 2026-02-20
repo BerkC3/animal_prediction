@@ -20,18 +20,18 @@ def initialize_predictor():
     return predictor
 
 
-def classify_image(image: Image.Image) -> dict:
+def classify_image(image: Image.Image):
     if image is None:
-        return {"Error": "Please upload an image first!"}
+        return {"Error": "Please upload an image first!"}, None
 
     if predictor is None:
-        return {"Error": "Model not loaded. Please restart the application."}
+        return {"Error": "Model not loaded. Please restart the application."}, None
 
     try:
-        predictions = predictor.get_top_predictions(image, top_k=5)
-        return {label.title(): float(score) for label, score in predictions.items()}
+        predictions, gradcam_image = predictor.generate_gradcam(image)
+        return {label.title(): float(score) for label, score in predictions.items()}, gradcam_image
     except Exception as e:
-        return {"Error": f"Prediction failed: {str(e)}"}
+        return {"Error": f"Prediction failed: {str(e)}"}, None
 
 
 def create_interface() -> gr.Blocks:
@@ -89,10 +89,11 @@ def create_interface() -> gr.Blocks:
             with gr.Column(scale=1):
                 gr.Markdown("### 📊 Prediction Results")
                 output_label = gr.Label(label="AI Prediction", num_top_classes=5)
+                gradcam_output = gr.Image(label="Grad-CAM Heatmap", height=300)
                 gr.Markdown(
                     """
                     **📌 Supported Animals (50 Species):**
-                    
+
                     `Antelope`, `Bat`, `Beaver`, `Blue Whale`, `Bobcat`, `Buffalo`,
                     `Chihuahua`, `Chimpanzee`, `Collie`, `Cow`, `Dalmatian`, `Deer`,
                     `Dolphin`, `Elephant`, `Fox`, `German Shepherd`, `Giant Panda`,
@@ -105,8 +106,8 @@ def create_interface() -> gr.Blocks:
                     """
                 )
 
-        classify_btn.click(fn=classify_image, inputs=image_input, outputs=output_label, api_name="classify")
-        image_input.upload(fn=classify_image, inputs=image_input, outputs=output_label)
+        classify_btn.click(fn=classify_image, inputs=image_input, outputs=[output_label, gradcam_output], api_name="classify")
+        image_input.upload(fn=classify_image, inputs=image_input, outputs=[output_label, gradcam_output])
 
         gr.Markdown(
             """
@@ -129,7 +130,7 @@ def main():
         initialize_predictor()
         interface = create_interface()
         interface.launch(
-            server_name="0.0.0.0",
+            server_name="localhost",
             server_port=7860,
             share=False,
             show_error=True,
