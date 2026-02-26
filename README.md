@@ -26,6 +26,7 @@ This project is an AI-powered animal image classification system that can identi
 - 🖼️ **Easy to Use**: Drag-and-drop image upload
 - 🌙 **Modern UI**: Beautiful dark-themed Gradio interface
 - ⚡ **GPU Support**: Automatic CUDA detection for faster inference
+- 🔥 **Grad-CAM Heatmaps**: Visual explanations showing what the model focuses on (Explainable AI)
 - 📊 **Top-5 Predictions**: Shows confidence scores for top predictions
 - 🔌 **API Ready**: Built-in REST API endpoint
 
@@ -50,8 +51,8 @@ This project is an AI-powered animal image classification system that can identi
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/berkc3/animal-classification-ai.git
-cd animal-classification-ai
+git clone https://github.com/berkc3/animal_prediction.git
+cd animal_prediction
 ```
 
 ### Step 2: Create Virtual Environment (Recommended)
@@ -107,6 +108,10 @@ predictions = predictor.get_top_predictions(image, top_k=5)
 
 print(predictions)
 # Output: {'lion': 0.85, 'tiger': 0.08, 'leopard': 0.03, ...}
+
+# Grad-CAM: get predictions + heatmap overlay
+top5, gradcam_image = predictor.generate_gradcam(image)
+gradcam_image.save("gradcam_output.png")
 ```
 
 ## 🦊 Supported Animals
@@ -152,11 +157,12 @@ The model can classify the following **50 animal species**:
 ## 📁 Project Structure
 
 ```
-animal-classification-ai/
+animal_prediction/
 ├── 📄 app.py                  # Gradio web interface
-├── 📄 backend.py              # Model loading & prediction logic
+├── 📄 backend.py              # Model loading, prediction & Grad-CAM logic
 ├── 📄 requirements.txt        # Python dependencies
 ├── 📄 run_app.bat             # Windows launcher script
+├── 📄 prediction.png          # Example prediction screenshot
 ├── 📄 README.md               # Project documentation
 └── 📄 .gitignore              # Git ignore rules
 ```
